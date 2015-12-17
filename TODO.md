@@ -1,0 +1,9 @@
+-- Clean up todo and readme
+-- Style guide
+-- clean up code
+-- Pretty print for scripts
+-- thread management
+-- cache
+-- config file
+-- physical part
+-- moar

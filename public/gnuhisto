@@ -1,0 +1,41 @@
+#!/usr/bin/perl -w
+
+if ($#ARGV == -1) {
+  die "No arguments passed in."
+}
+for my $x (0..$#ARGV) {
+  if ($x > 5) {
+    last;
+  }
+  if ($x == 0) {
+    open(FILE, $ARGV[0]) || die "Couldn't open file $ARGV[0].\n";
+  } else {
+    $patterns{$ARGV[$x]} = 0;
+  }
+}
+
+while (<FILE>) {
+  foreach my $pattern (keys %patterns) {
+    @matches = ($_ =~ m/$pattern/g);
+    foreach my $match (@matches) {
+      if (exists $counts{$match}) {
+        $counts{$match} += 1;
+      } else {
+        $counts{$match} = 1;
+      }
+    }
+  }
+}
+
+close(FILE);
+
+open (TEST, ">public/test.dat");
+
+foreach my $pattern (keys %counts) {
+  print TEST "$pattern $counts{$pattern}\n";
+}
+
+close(TEST);
+
+open GNUPLOT, "|gnuplot";
+print GNUPLOT "set terminal jpeg; set boxwidth 0.5 relative; set style fill solid 0.25 border -1; plot 'public/test.dat' using 2:xticlabels(1) with boxes;"
